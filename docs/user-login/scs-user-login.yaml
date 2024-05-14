@@ -1,0 +1,120 @@
+openapi: 3.0.0
+
+info:
+  title: SCS User Login
+  description: |
+    [docs](https://github.com/south-coast-science/docs/wiki) > 
+    [APIs](https://south-coast-science.github.io/scs-api/)
+    ***
+    
+    ### The user presents an email address and password. 
+      
+    Authentication requires the token name Authorization with the value `@southcoastscience.com`
+    
+    If authentication is successful, the endpoint responds with an IdToken. The IdToken should be used as the API key for subsequent requests to SCS APIs.
+  version: 2.0.0
+
+servers:
+  - url: https://api.southcoastscience.com
+    description: Live server
+
+paths:
+  /CogSecAPI/CognitoLogin/user:
+    post:
+      tags:
+        - CognitoLogin
+      summary: Present an email address and password, and receive an IdToken if successful.
+      description: The request must be authorized with the header field name Authorization and value @southcoastscience.com
+
+      security:
+        - LoginAuthorization: []
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginCredentials'
+            examples:
+              Success:
+                value:
+                  email: demo@southcoastscience.com
+                  password: Science123!
+              InvalidCredentials:
+                value:
+                  email: demo@southcoastscience.com
+                  password: Science
+        required: true
+
+      responses:
+        '200':
+          description: Present credentials and receive authentication token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    LoginCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      required:
+        - authentication-status
+      properties:
+        authentication-status:
+          description: Authentication status
+          type: string
+          enum:
+            - Ok
+            - InvalidCredentials
+        content:
+          type: object
+          properties:
+            AuthenticationResult:
+              type: object
+              properties:
+                IdToken:
+                  description: Token for subsequent requests
+                  type: string
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human-readable error message
+          type: string
+
+  securitySchemes:
+    LoginAuthorization:
+      type: apiKey
+      in: header
+      name: Authorization
+
+security:
+  - LoginAuthorization: []
