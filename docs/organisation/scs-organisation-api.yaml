@@ -1,0 +1,446 @@
+openapi: 3.0.0
+
+info:
+  title: SCS Organisation
+  description: |
+    ## Interrogate SCS organisations, users and devices
+      
+    Authentication requires the token name Token with the value from the IdToken field returned by a UserAuthentication request.
+  version: 2.0.0
+
+servers:
+- url: https://api.southcoastscience.com
+  description: Live server
+
+paths:
+  /OrgMgrAPI/OrganisationManager/organisation:
+    get:
+      tags:
+      - Organisation
+      summary: Present an organisation label and receive an organisation record.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+        - AuthenticationToken: []
+
+      parameters:
+      - name: Label
+        in: query
+        description: Organisation label
+        required: false
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: South Coast Science (Demo)
+
+      responses:
+        "200":
+          description: Present organisation label and receive organisation record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /OrgMgrAPI/OrganisationManager/user:
+    get:
+      tags:
+      - User
+      summary: Present an organisation ID and receive a list of organisation user records.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+        - AuthenticationToken: []
+
+      parameters:
+      - name: OrgID
+        in: query
+        description: Organisation ID
+        required: false
+        schema:
+          type: integer
+        examples:
+          Demo:
+            value: 68
+
+      responses:
+        "200":
+          description: Present organisation ID and receive a list of organisation user records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /CliTrfAPI/ClientTraffic/users:
+    get:
+      tags:
+      - User
+      summary: Present a traffic specification and receive a list of traffic statistics.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+      - AuthenticationToken: []
+
+      parameters:
+      - name: endpoint
+        in: query
+        description: The name of an API endpoint
+        required: true
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: TopicHistory
+
+      - name: clients
+        in: query
+        description: A list of one or more email addresses
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                default: demo@southcoastscience.com
+              minItems: 1
+              maxItems: 100
+
+      - name: period
+        in: query
+        description: YYYY or YYYY-MM or YYYY-MM-DD period
+        required: true
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: 2024-05
+
+      - name: aggregate
+        in: query
+        description: If true, sum all day statistics for the period
+        required: true
+        schema:
+          type: boolean
+        examples:
+          Demo:
+            value: false
+
+      responses:
+        "200":
+          description: Present a traffic specification and receive a list of traffic statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientTrafficReport'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /OrgMgrAPI/OrganisationManager/device:
+    get:
+      tags:
+      - Device
+      summary: Present an organisation ID and receive a list of organisation device records.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+      - AuthenticationToken: []
+
+      parameters:
+      - name: OrgID
+        in: query
+        description: Organisation ID
+        required: true
+        schema:
+          type: integer
+        examples:
+          Demo:
+            value: 68
+
+      responses:
+        "200":
+          description: Present an organisation ID and receive a list of organisation device records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Devices'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /ConfAPI/ConfigurationFinder:
+    get:
+      tags:
+      - Device
+      summary: Present a device tag and receive a list of device configuration records.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+      - AuthenticationToken: []
+
+      parameters:
+      - name: tagFilter
+        in: query
+        description: Device tag
+        required: true
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: scs-bgx-570
+
+      - name: exactMatch
+        in: query
+        description: Match the whole device tag
+        required: true
+        schema:
+          type: boolean
+        examples:
+          Demo:
+            value: true
+
+      - name: responseMode
+        in: query
+        description: Device tag
+        required: true
+        schema:
+          type: string
+          enum: [LATEST, HISTORY, DIFF]
+        examples:
+          Demo:
+            value: LATEST
+
+      responses:
+        "200":
+          description: Present a device tag and receive a list of device configuration records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceConfigurationReport'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Organisation:
+      type: object
+      properties:
+        OrgID:
+          type: string
+          description: Unique ID
+        Label:
+          type: string
+          description: Short name
+        LongName:
+          type: string
+          description: Descriptive name
+        URL:
+          type: string
+          description: URL of customer
+        Owner:
+          type: string
+          description: Email address of administrator
+        ParentID:
+          type: string
+          description: Unique ID of parent organisation
+
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        Username:
+          type: string
+          description: Cognito username
+        OrgID:
+          type: integer
+          description: ID of organisation
+        IsOrgAdmin:
+          type: boolean
+          description: True if the user is an organisation administrator
+        IsDeviceAdmin:
+          type: boolean
+          description: True if the user may update the organisation's devices
+        IsSuspended:
+          type: boolean
+          description: True if the user is suspended from the organisation
+
+    ClientTrafficReport:
+      description: Block mode
+      type: object
+      properties:
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientTraffic'
+        itemCount:
+          type: integer
+          description: The number of items
+
+    ClientTraffic:
+      type: object
+      properties:
+        endpoint:
+          type: string
+          description: The name of an API endpoint
+        client:
+          type: string
+          description: An email address
+        period:
+          type: string
+          description: YYYY or YYYY-MM or YYYY-MM-DD period
+        queries:
+          type: integer
+          description: The number of queries during the period
+        invocations:
+          type: integer
+          description: The number of invocations during the period (some queries use multiple invocations)
+        characters:
+          type: integer
+          description: The total data volume during the period
+
+    Devices:
+      type: array
+      items:
+        $ref: '#/components/schemas/Device'
+
+    Device:
+      type: object
+      properties:
+        DeviceTag:
+          type: string
+          description: ID of device
+        OrgID:
+          type: integer
+          description: ID of organisation
+        DeploymentLabel:
+          type: string
+          description: Short description of device location
+        DevicePath:
+          type: string
+          description: Prefix for device control and status topics
+        LocationPath:
+          type: string
+          description: Prefix for environmental data topics
+        StartDatetime:
+          type: string
+          description: ISO 8601 datetime for start of deployment
+        EndDatetime:
+          type: string
+          description: ISO 8601 datetime for end of deployment
+
+    DeviceConfigurationReport:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [LATEST, HISTORY, DIFF]
+          description: The mode as presented in the request
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceConfiguration'
+        itemCount:
+          type: integer
+          description: The number of items
+
+    DeviceConfiguration:
+      type: object
+      properties:
+        rec:
+          type: string
+          description: ISO 8601 datetime of the time the configuration was recorded
+        tag:
+          type: string
+          description: Device tag
+        ver:
+          type: number
+          description: Data format version of the configuration report
+        val:
+          type: object
+          description: The configuration report
+
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable error message
+
+  securitySchemes:
+    AuthenticationToken:
+      type: apiKey
+      name: Token
+      in: header
+
+security:
+- AuthenticationToken: []
+
