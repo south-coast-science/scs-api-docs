@@ -3,6 +3,10 @@ openapi: 3.0.0
 info:
   title: SCS Organisation
   description: |
+    [docs](https://github.com/south-coast-science/docs/wiki) > 
+    [APIs](https://south-coast-science.github.io/scs-api-docs/)
+    ***
+    
     ## Interrogate SCS organisations, users and devices
       
     Authentication requires the token name Token with the value from the IdToken field returned by a UserAuthentication request.

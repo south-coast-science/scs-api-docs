@@ -4,7 +4,7 @@ info:
   title: SCS User Login
   description: |
     [docs](https://github.com/south-coast-science/docs/wiki) > 
-    [APIs](https://south-coast-science.github.io/scs-api/)
+    [APIs](https://south-coast-science.github.io/scs-api-docs/)
     ***
     
     ### The user presents an email address and password. 
