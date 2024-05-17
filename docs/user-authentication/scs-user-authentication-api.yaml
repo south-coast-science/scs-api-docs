@@ -70,6 +70,7 @@ paths:
 components:
   schemas:
     LoginCredentials:
+      description: Ane email address and password
       type: object
       required:
         - email
@@ -81,9 +82,8 @@ components:
           type: string
 
     LoginResponse:
+      description: Authentication status, including the session IdToken if authenticated
       type: object
-      required:
-        - authentication-status
       properties:
         authentication-status:
           description: Authentication status
@@ -102,16 +102,16 @@ components:
                   type: string
 
     Error:
+      description: A representation of an HTTP error
       type: object
-      required:
-        - message
       properties:
         message:
-          description: A human-readable error message
           type: string
+          description: A human-readable error message
 
   securitySchemes:
     LoginAuthorization:
+      description: The token `@southcoastscience.com`
       type: apiKey
       in: header
       name: Authorization

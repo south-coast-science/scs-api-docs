@@ -17,6 +17,83 @@ servers:
   description: Live server
 
 paths:
+  /DataAPI/TopicHistory:
+    get:
+      tags:
+      - Data
+      summary: Retrieve data for a given topic, start datetime, end datetime and optional aggregation.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+      - AuthenticationToken: []
+
+      parameters:
+      - name: topic
+        in: query
+        description: The topic carrying the data
+        required: true
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: south-coast-science-demo/brighton-urban/loc/1/climate
+
+      - name: startTime
+        in: query
+        description: ISO 8601 datetime - returned documents will have datetimes equal or greater to this
+        required: true
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: 2024-05-01T09:14:31.000Z
+
+      - name: endTime
+        in: query
+        description: ISO 8601 datetime - returned documents will have datetimes less than this
+        required: true
+        schema:
+          type: string
+        examples:
+          Demo:
+            value: 2024-05-02T09:14:31.000Z
+
+      - name: checkpoint
+        in: query
+        description: A specification of the aggregation period
+        required: false
+        schema:
+          type: string
+        examples:
+          None:
+            value: null
+          One minute:
+            value: "**:/01:00"
+          One hour:
+            value: "**:00:00"
+
+      responses:
+        "200":
+          description: Retrieve data for a given topic, start datetime, end datetime and optional aggregation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMessages'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /OriginAPI/TopicOrigin:
     get:
       tags:
@@ -139,8 +216,23 @@ paths:
 
 components:
   schemas:
+    PaginatedMessages:
+      description: A collection of Messages, with pagination
+      type: object
+      properties:
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        itemCount:
+          type: integer
+          description: The number of items
+        next:
+          type: string
+          description: The URL for the next page
+
     PaginatedTopicBylines:
-      description: A collection of TopicByline records with pagination.
+      description: A collection of TopicByline records, with pagination
       type: object
       properties:
         Items:
@@ -155,13 +247,13 @@ components:
           description: The URL for the next page
 
     TopicBylines:
-      description: A collection of TopicByline records.
+      description: A collection of TopicByline records
       type: array
       items:
         $ref: '#/components/schemas/TopicByline'
 
     TopicByline:
-      description: A report on the latest publication activity of a device on a topic.
+      description: A report on the latest publication activity of a device on a topic
       type: object
       properties:
         device:
@@ -183,13 +275,13 @@ components:
           $ref: '#/components/schemas/Message'
 
     TopicOrigins:
-      description: A collection of TopicOrigin records.
+      description: A collection of TopicOrigin records
       type: array
       items:
         $ref: '#/components/schemas/TopicOrigin'
 
     TopicOrigin:
-      description: A report on the oldest-known publication on the given topic.
+      description: A report on the oldest-known publication on the given topic
       type: object
       properties:
         topic:
@@ -206,7 +298,7 @@ components:
           description: ISO 8601 datetime of the expiry of this document in the database
 
     Message:
-      description: A message published by a device. The val field contains a JSON document whose structure varies, dependent on the topic.
+      description: A message published by a device. The val field contains a JSON document whose structure varies, dependent on the topic
       properties:
         rec:
           type: string
@@ -222,9 +314,7 @@ components:
           description: Recorded values
 
     Error:
-      description: A representation of an HTTP error.
-      required:
-      - message
+      description: A representation of an HTTP error
       type: object
       properties:
         message:
@@ -233,7 +323,7 @@ components:
 
   securitySchemes:
     AuthenticationToken:
-      description: A token indicating the security session granted to the client by the UserLogin endpoint.
+      description: A token indicating the security session granted to the client by the UserLogin endpoint
       type: apiKey
       name: Token
       in: header

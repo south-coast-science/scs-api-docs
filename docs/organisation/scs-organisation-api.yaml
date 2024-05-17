@@ -290,6 +290,7 @@ paths:
 components:
   schemas:
     Organisation:
+      description: An incorporation of users and devices
       type: object
       properties:
         OrgID:
@@ -312,11 +313,15 @@ components:
           description: Unique ID of parent organisation
 
     Users:
+      description: A collection of User records
       type: array
       items:
         $ref: '#/components/schemas/User'
 
     User:
+      description: >
+        The relationship between a Cognito user identity and an Organisation 
+        (a single Cognito user identity may be simultaneously associated with multiple Organisations)
       type: object
       properties:
         Username:
@@ -336,7 +341,7 @@ components:
           description: True if the user is suspended from the organisation
 
     ClientTrafficReport:
-      description: Block mode
+      description: A collection of ClientTraffic reports, with pagination
       type: object
       properties:
         Items:
@@ -348,6 +353,7 @@ components:
           description: The number of items
 
     ClientTraffic:
+      description: API data access statistcs by email address and date
       type: object
       properties:
         endpoint:
@@ -370,11 +376,15 @@ components:
           description: The total data volume during the period
 
     Devices:
+      description: A collection of Devices
       type: array
       items:
         $ref: '#/components/schemas/Device'
 
     Device:
+      description: > 
+        The relationship between a Cognito device identity and an Organisation 
+        (a single device identity identity may be associated with multiple Organisations over time)
       type: object
       properties:
         DeviceTag:
@@ -400,6 +410,9 @@ components:
           description: ISO 8601 datetime for end of deployment
 
     DeviceConfigurationReport:
+      description: >
+        A collection of DeviceConfigurations, with pagination
+        (may be either the current configuration or a history of configurations  / changes over time)
       type: object
       properties:
         mode:
@@ -415,11 +428,12 @@ components:
           description: The number of items
 
     DeviceConfiguration:
+      description: The configuration of a device
       type: object
       properties:
         rec:
           type: string
-          description: ISO 8601 datetime of the time the configuration was recorded
+          description: ISO 8601 datetime when the configuration was recorded
         tag:
           type: string
           description: Device tag
@@ -431,8 +445,7 @@ components:
           description: The configuration report
 
     Error:
-      required:
-      - message
+      description: A representation of an HTTP error
       type: object
       properties:
         message:
@@ -441,6 +454,7 @@ components:
 
   securitySchemes:
     AuthenticationToken:
+      description: A token indicating the security session granted to the client by the UserLogin endpoint
       type: apiKey
       name: Token
       in: header
