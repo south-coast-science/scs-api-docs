@@ -1,0 +1,242 @@
+openapi: 3.0.0
+
+info:
+  title: SCS Data
+  description:  |
+    [docs](https://github.com/south-coast-science/docs/wiki) > 
+    [APIs](https://south-coast-science.github.io/scs-api-docs/)
+    ***
+    
+    ## Interrogate Historical data
+      
+    Authentication requires the token name Token with the value from the IdToken field returned by a UserAuthentication request.
+  version: 2.0.0
+
+servers:
+- url: https://api.southcoastscience.com
+  description: Live server
+
+paths:
+  /OriginAPI/TopicOrigin:
+    get:
+      tags:
+      - Origin
+      summary: Present one or more topic paths and receive topic origin reports for the oldest-known publication on each given topic.
+      description: The request must be authorized with the header field name Token and value from the IdToken on login.
+
+      security:
+      - AuthenticationToken: []
+
+      parameters:
+      - name: topics
+        in: query
+        description: A list of one or more topic paths
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                default: south-coast-science-demo/brighton-urban/loc/1/climate
+              minItems: 1
+              maxItems: 100
+
+      responses:
+        "200":
+          description: Present one or more topic paths and receive topic origin reports for the oldest-known publication on each given topic.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicOrigins'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /BylineAPI/TopicBylines:
+    get:
+      tags:
+      - Bylines
+      summary: Find bylines, optionally filtered by device tag or topic path.
+      description: >
+        The request must be authorized with the header field name Token and value from the IdToken on login. 
+        The response schema is **TopicBylines** if a filter is provided, **PaginatedTopicBylines** otherwise.
+
+      security:
+      - AuthenticationToken: []
+
+      parameters:
+      - name: device
+        in: query
+        description: Filter by device tag
+        required: false
+        schema:
+          type: string
+        examples:
+          No device filter:
+            value: null
+          Find by device:
+            value: scs-bgx-570
+
+      - name: topic
+        in: query
+        description: Filter by topic path
+        required: false
+        schema:
+          type: string
+        examples:
+          No topic filter:
+            value: null
+          Filter by topic:
+            value: south-coast-science-demo/brighton-urban/loc/1/climate
+
+      - name: include-messages
+        in: query
+        description: Include the published message
+        required: false
+        schema:
+          type: boolean
+        examples:
+          No:
+            value: false
+          Yes:
+            value: true
+
+      responses:
+        "200":
+          description: Find bylines, optionally filtered by device tag or topic path.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TopicBylines'
+                  - $ref: '#/components/schemas/PaginatedTopicBylines'
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    PaginatedTopicBylines:
+      description: A collection of TopicByline records with pagination.
+      type: object
+      properties:
+        Items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopicByline'
+        itemCount:
+          type: integer
+          description: The number of items
+        next:
+          type: string
+          description: The URL for the next page
+
+    TopicBylines:
+      description: A collection of TopicByline records.
+      type: array
+      items:
+        $ref: '#/components/schemas/TopicByline'
+
+    TopicByline:
+      description: A report on the latest publication activity of a device on a topic.
+      type: object
+      properties:
+        device:
+          type: string
+          description: Topic path
+        topic:
+          type: string
+          description: The tag of the device that published the document
+        rec:
+          type: string
+          description: ISO 8601 datetime of data generation
+        lastSeenTime:
+          type: string
+          description: ISO 8601 datetime of ingestion to the database
+        last_write:
+          type: string
+          description: Synonym for rec
+        message:
+          $ref: '#/components/schemas/Message'
+
+    TopicOrigins:
+      description: A collection of TopicOrigin records.
+      type: array
+      items:
+        $ref: '#/components/schemas/TopicOrigin'
+
+    TopicOrigin:
+      description: A report on the oldest-known publication on the given topic.
+      type: object
+      properties:
+        topic:
+          type: string
+          description: Topic path
+        device:
+          type: string
+          description: The tag of the device that published the oldest-known document
+        rec:
+          type: string
+          description: ISO 8601 datetime of data generation
+        expiry:
+          type: string
+          description: ISO 8601 datetime of the expiry of this document in the database
+
+    Message:
+      description: A message published by a device. The val field contains a JSON document whose structure varies, dependent on the topic.
+      properties:
+        rec:
+          type: string
+          description: ISO 8601 datetime of data generation
+        tag:
+          type: string
+          description: Device tag
+        ver:
+          type: number
+          description: Data format version of the message
+        val:
+          type: object
+          description: Recorded values
+
+    Error:
+      description: A representation of an HTTP error.
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable error message
+
+  securitySchemes:
+    AuthenticationToken:
+      description: A token indicating the security session granted to the client by the UserLogin endpoint.
+      type: apiKey
+      name: Token
+      in: header
+
+security:
+- AuthenticationToken: []
