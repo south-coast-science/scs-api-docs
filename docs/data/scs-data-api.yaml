@@ -220,6 +220,9 @@ components:
       description: A collection of Messages, with pagination
       type: object
       properties:
+        interval:
+          type: integer
+          description: An estimate of the average number of seconds between message rec values
         Items:
           type: array
           items:
@@ -229,7 +232,7 @@ components:
           description: The number of items
         next:
           type: string
-          description: The URL for the next page
+          description: The URL for the next page if the response is incomplete
 
     PaginatedTopicBylines:
       description: A collection of TopicByline records, with pagination
@@ -244,7 +247,7 @@ components:
           description: The number of items
         next:
           type: string
-          description: The URL for the next page
+          description: The URL for the next page if the response is incomplete
 
     TopicBylines:
       description: A collection of TopicByline records

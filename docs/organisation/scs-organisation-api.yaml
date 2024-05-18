@@ -351,6 +351,9 @@ components:
         itemCount:
           type: integer
           description: The number of items
+        next:
+          type: string
+          description: The URL for the next page if the response is incomplete
 
     ClientTraffic:
       description: API data access statistcs by email address and date
@@ -426,6 +429,9 @@ components:
         itemCount:
           type: integer
           description: The number of items
+        next:
+          type: string
+          description: The URL for the next page if the response is incomplete
 
     DeviceConfiguration:
       description: The configuration of a device
