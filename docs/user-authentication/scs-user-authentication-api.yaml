@@ -9,7 +9,7 @@ info:
     
     ### Login and Cognito account management. 
       
-    Authentication requires the token name Authorization with the value `@southcoastscience.com`
+    Authentication requires the token name Authorization with the value `@southcoastscience.com`.
     
     In the case of login, if authentication is successful, the endpoint responds with an IdToken. The IdToken should be used as the API key for subsequent requests to SCS APIs.
   version: 2.0.0
