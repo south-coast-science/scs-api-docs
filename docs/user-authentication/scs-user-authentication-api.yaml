@@ -22,7 +22,7 @@ paths:
   /CogSecAPI/CognitoLogin/user:
     post:
       tags:
-        - CognitoLogin
+        - Cognito login
       summary: Present an email address and password, and receive an IdToken if successful.
       description: The request must be authorized with the header field name Authorization and value @southcoastscience.com
 
@@ -70,7 +70,7 @@ paths:
   /CogUsrPwdAPI/CognitoUserPassword/send-email:
     post:
       tags:
-        - CognitoStatus
+        - Cognito email
       summary: Present email address. The appropriate access email is sent to the recipient.
       description: The request must be authorized with the header field name Authorization and value @southcoastscience.com
 
