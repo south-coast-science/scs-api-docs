@@ -4,7 +4,8 @@ info:
   title: SCS User Authentication
   description: |
     [docs](https://github.com/south-coast-science/docs/wiki) > 
-    [APIs](https://south-coast-science.github.io/scs-api-docs/)
+    [APIs](https://south-coast-science.github.io/scs-api-docs/wiki) >
+    [user authentication](https://github.com/south-coast-science/scs-api-docs/wiki/1:-User-authentication)
     ***
     
     ### Login and Cognito account management. 
