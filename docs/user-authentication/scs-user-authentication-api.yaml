@@ -7,11 +7,11 @@ info:
     [APIs](https://south-coast-science.github.io/scs-api-docs/)
     ***
     
-    ### The user presents an email address and password. 
+    ### Login and Cognito account management. 
       
     Authentication requires the token name Authorization with the value `@southcoastscience.com`
     
-    If authentication is successful, the endpoint responds with an IdToken. The IdToken should be used as the API key for subsequent requests to SCS APIs.
+    In the case of login, if authentication is successful, the endpoint responds with an IdToken. The IdToken should be used as the API key for subsequent requests to SCS APIs.
   version: 2.0.0
 
 servers:
