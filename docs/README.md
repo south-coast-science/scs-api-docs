@@ -1,8 +1,3 @@
-# scs-api-docs
+_Documentation for South Coast Science APIs_
 
-[user-authentication](https://south-coast-science.github.io/scs-api-docs/user-authentication)
-
-[data](https://south-coast-science.github.io/scs-api-docs/data)
-
-[organisation](https://south-coast-science.github.io/scs-api-docs/organisation)
-
+Information at the [SCS APIs wiki](https://github.com/south-coast-science/scs-api-docs/wiki).
