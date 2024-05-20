@@ -67,14 +67,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /CogUsrPwdAPI/CognitoUserPassword/send-email:
+    post:
+      tags:
+        - CognitoStatus
+      summary: Present email address. The appropriate access email is sent to the recipient.
+      description: The request must be authorized with the header field name Authorization and value @southcoastscience.com
+
+      security:
+        - LoginAuthorization: []
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequest'
+        required: true
+
+      responses:
+        '200':
+          description: The appropriate access email is sent to the recipient.
+
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     LoginCredentials:
-      description: Ane email address and password
+      description: An email address and password
       type: object
-      required:
-        - email
-        - password
       properties:
         email:
           type: string
@@ -100,6 +132,13 @@ components:
                 IdToken:
                   description: Token for subsequent requests
                   type: string
+
+    EmailSendRequest:
+      description: An email address
+      type: object
+      properties:
+        email:
+          type: string
 
     Error:
       description: A representation of an HTTP error
