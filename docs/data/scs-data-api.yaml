@@ -232,7 +232,7 @@ components:
           description: The number of items
         next:
           type: string
-          description: The URL for the next page if the response is incomplete
+          description: The URL for the next page (if the response is incomplete)
 
     PaginatedTopicBylines:
       description: A collection of TopicByline records, with pagination
@@ -247,7 +247,7 @@ components:
           description: The number of items
         next:
           type: string
-          description: The URL for the next page if the response is incomplete
+          description: The URL for the next page (if the response is incomplete)
 
     TopicBylines:
       description: A collection of TopicByline records
